@@ -1,24 +1,25 @@
 NAME = so_long
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
-MFLAGS = -framework OpenGL -framework AppKit -L./mlx -lmlx
+MFLAGS = -framework OpenGL -framework AppKit -L../mlx -lmlx
 
-MLX = ./mlx/libmlx.a
+MLX = ../mlx/libmlx.a
+GNL = ../gnl/get_next_line.c ../gnl/get_next_line_utils.c
 SRCS = test.c utils.c
 
-$(NAME): $(SRCS) $(MLX)
-		@gcc $(FLAGS) $(MFLAGS) $(SRCS) -o $(NAME)
+$(NAME): $(SRCS) $(MLX) $(GNL)
+		@gcc $(FLAGS) $(MFLAGS) $(GNL) $(SRCS) -o $(NAME)
 
-all: $(MLX) $(NAME)
+all: $(MLX) $(GNL) $(NAME)
 
 $(MLX):
-	@make -C ./mlx
+	@make -C ../mlx
 
 clean:
-	@rm -rf ./mlx/*.o
+	@rm -rf ../mlx/*.o
 
 fclean: clean
-	@rm -rf ./mlx/*.a
+	@rm -rf ../mlx/*.a
 	@rm -rf $(NAME)
 
 re: fclean all
