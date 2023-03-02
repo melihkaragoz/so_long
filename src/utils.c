@@ -55,6 +55,11 @@ void sl_pixel_fill(t_data *data, int x_start, int y_start, int x_end, int y_end,
 	}
 }
 
+void	sl_put_wall(t_data *data, int x_start, int y_start, int x_end, int y_end)
+{
+ //
+}
+
 void sl_draw_character(t_data *img, int x, int y)
 {																	// karakter boyu 18x50
 	sl_pixel_fill(img, x + 4, y, x + 14, y + 10, 0x00ACB9EF);		// kafa

@@ -5,7 +5,7 @@ MFLAGS = -framework OpenGL -framework AppKit -L../mlx -lmlx
 
 MLX = ../mlx/libmlx.a
 GNL = ../gnl/get_next_line.c ../gnl/get_next_line_utils.c
-SRCS = test.c utils.c
+SRCS = so_long.c utils.c
 
 $(NAME): $(SRCS) $(MLX) $(GNL)
 		@gcc $(FLAGS) $(MFLAGS) $(GNL) $(SRCS) -o $(NAME)
