@@ -2,9 +2,9 @@
 
 int main(int ac, char **av)
 {
-	void	*mlx;
-	void	*mlx_win;
-	char	*map_path;
+	void *mlx;
+	void *mlx_win;
+	char *map_path;
 	t_data img;
 
 	if (ac == 2)
