@@ -27,7 +27,8 @@ void	sl_pixel_put(t_data *data, int x, int y, int color);
 void	sl_pixel_fill(t_data *data, int x_start, int y_start, int x_end, int y_end, int color);
 void	sl_draw_character(t_data *img, int x, int y);
 void	sl_put_wall(t_data *data, int x_start, int y_start);
-void	sl_draw_walls(t_data *data, char *map_path);
+void	sl_draw_items(t_data *data, char *map_path);
+void	sl_draw_collectible(t_data *img, int x, int y);
 int		get_map_width(char *map_path);
 int		get_map_height(char *map_path);
 #endif
