@@ -6,12 +6,12 @@ int main(int ac, char **av)
 	void *mlx_win;
 	char *map_path;
 	t_data img;
-	t_game	game;
+	t_game game;
 
 	if (ac == 1)
 	{
 		(void)av;
-		map_path = "maps/map2.ber"; //av[1];
+		map_path = "maps/map2.ber"; // av[1];
 		img.map_width = get_map_width(map_path);
 		img.map_height = get_map_height(map_path);
 		img.unit_width = 50;
@@ -21,6 +21,9 @@ int main(int ac, char **av)
 		game.curr_score = 0;
 		game.screen_width = img.map_width * img.unit_width;
 		game.screen_height = img.map_height * img.unit_height;
+		game.map_height = img.map_height;
+		game.map_width = img.map_width;
+		game.map = malloc(sizeof(char) * (game.map_width * game.map_height));
 		mlx = mlx_init();
 		mlx_win = mlx_new_window(mlx, img.unit_width * img.map_width, img.unit_height * img.map_height, "so long");
 		img.img = mlx_new_image(mlx, img.unit_width * img.map_width, img.unit_height * img.map_height);
@@ -30,15 +33,9 @@ int main(int ac, char **av)
 		sl_draw_items(&img, &game, map_path);
 		/*
 		int i = 0;
-		int j = 0;
 		while (game.map[i])
 		{
-			while (game.map[i][j])
-			{
-				printf("%c|",game.map[i][j]);
-				j++;
-			}
-			printf("\n");
+			printf("%s",game.map[i]);
 			i++;
 		}
 		*/

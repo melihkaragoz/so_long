@@ -14,8 +14,13 @@ typedef struct s_game
 	int curr_score;
 	int screen_width;
 	int screen_height;
+	int	unit_width;
+	int	unit_height;
+	int	map_height;
+	int	map_width;
 	void *mlx;
 	void *win;
+	char *line;
 	char **map;
 } t_game;
 

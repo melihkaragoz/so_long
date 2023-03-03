@@ -1,9 +1,9 @@
 #include "so_long.h"
 
-char	*ft_strdup(char *str)
+char *ft_strdup(char *str)
 {
-	char	*c;
-	int		i;
+	char *c;
+	int i;
 
 	i = 0;
 	if (!str)
@@ -22,7 +22,7 @@ char	*ft_strdup(char *str)
 
 int sl_key_handler(int keycode, t_game *t)
 {
-	//printf("code : %d\n", keycode);
+	// printf("code : %d\n", keycode);
 	if (keycode == 53)
 	{
 		mlx_destroy_window(t->mlx, t->win);
@@ -55,7 +55,7 @@ void sl_move_up(t_game *t)
 	{
 		t->curr_y_pos -= 50;
 		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-		// ekran yeniden cizilecek
+										  // ekran yeniden cizilecek
 	}
 	else
 		printf("height-up overflow");
@@ -68,7 +68,7 @@ void sl_move_down(t_game *t)
 	{
 		t->curr_y_pos += 50;
 		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-		// ekran yeniden cizilecek
+										  // ekran yeniden cizilecek
 	}
 	else
 		printf("height-down overflow");
@@ -81,7 +81,7 @@ void sl_move_left(t_game *t)
 	{
 		t->curr_x_pos -= 50;
 		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-		// ekran yeniden cizilecek
+										  // ekran yeniden cizilecek
 	}
 	else
 		printf("width-left overflow");
@@ -94,7 +94,7 @@ void sl_move_right(t_game *t)
 	{
 		t->curr_x_pos += 50;
 		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-		// ekran yeniden cizilecek
+										  // ekran yeniden cizilecek
 	}
 	else
 		printf("width-right overflow");
@@ -167,7 +167,7 @@ void sl_draw_items(t_data *data, t_game *game, char *map_path)
 	int x;
 	int y;
 	int i;
-	int	line;
+	int line;
 
 	i = 0;
 	x = 0;
@@ -177,10 +177,10 @@ void sl_draw_items(t_data *data, t_game *game, char *map_path)
 	s = get_next_line(fd);
 	while (s)
 	{
-		(void)line;
-		//game->map[line++] = ft_strdup(s);
+		game->map[line] = ft_strdup(s);
 		while (s[i] && s[i] != '\n')
 		{
+			//game->map[line][i] = s[i];
 			if (s[i] == '1')
 			{
 				sl_put_wall(data, x, y);
@@ -205,10 +205,12 @@ void sl_draw_items(t_data *data, t_game *game, char *map_path)
 
 			i++;
 		}
+		// game->map[line][i] = '\0';
 		y += data->unit_height;
 		x = 0;
 		i = 0;
 		free(s);
+		line++;
 		s = get_next_line(fd);
 	}
 }
