@@ -1,5 +1,56 @@
 #include "so_long.h"
 
+int sl_key_handler(int keycode, t_game *t)
+{
+	printf("code : %d\n", keycode);
+	if (keycode == 53)
+	{
+		mlx_destroy_window(t->mlx, t->win);
+		exit(0);
+	}
+	else if (keycode == 36)
+		mlx_clear_window(t->mlx, t->win);
+	else
+		sl_move(keycode, t);
+	return (0);
+}
+
+void sl_move(int key, t_game *t)
+{
+	if (key == 13 || key == 126)
+		sl_move_up(t);
+	else if (key == 1 || key == 125)
+		sl_move_down(t);
+	else if (key == 0 || key == 123)
+		sl_move_left(t);
+	else if (key == 2 || key == 124)
+		sl_move_right(t);
+}
+
+void	sl_move_up(t_game *t)
+{
+	(void)t;
+	printf("up\n");
+}
+
+void	sl_move_down(t_game *t)
+{
+	(void)t;
+	printf("down\n");
+}
+
+void	sl_move_left(t_game *t)
+{
+	(void)t;
+	printf("left\n");
+}
+
+void	sl_move_right(t_game *t)
+{
+	(void)t;
+	printf("right\n");
+}
+
 int get_map_width(char *map_path)
 {
 	int fd;
@@ -60,7 +111,7 @@ void sl_put_wall(t_data *data, int x_start, int y_start) // parametre olarak sad
 	sl_pixel_fill(data, x_start, y_start, (x_start + data->unit_width), (y_start + data->unit_height), 0x00BC4A3C); // unit_width ve height birim karenin boyutlarini temsil ediyor bu fonksiyon ve parametreler sayesinde bir birim kare boyamis oluyoruz. // duvarlar simdilik yesil renk olacak sonra kahverengi rengini bulup degisicez
 }
 
-void sl_draw_items(t_data *data, char *map_path)
+void sl_draw_items(t_data *data, t_game *game, char *map_path)
 {
 	char *s;
 	int fd;
@@ -71,9 +122,6 @@ void sl_draw_items(t_data *data, char *map_path)
 	i = 0;
 	x = 0;
 	y = 0;
-	(void)x;
-	(void)y;
-	(void)data;
 	fd = open(map_path, O_RDONLY);
 	s = get_next_line(fd);
 	while (s)
@@ -97,6 +145,8 @@ void sl_draw_items(t_data *data, char *map_path)
 			else if (s[i] == 'P')
 			{
 				sl_draw_character(data, x, y);
+				game->curr_x_pos = x;
+				game->curr_y_pos = y;
 				x += data->unit_width;
 			}
 
