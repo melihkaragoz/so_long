@@ -1,5 +1,15 @@
 #include "so_long.h"
 
+void sl_print_map(t_game *game)
+{
+	int i = 0;
+	while (game->map[i])
+	{
+		printf("%s", game->map[i]);
+		i++;
+	}
+}
+
 char *ft_strdup(char *str)
 {
 	char *c;
@@ -80,8 +90,7 @@ void sl_move_left(t_game *t)
 	if (t->curr_x_pos >= 50)
 	{
 		t->curr_x_pos -= 50;
-		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-										  // ekran yeniden cizilecek
+		sl_update_screen(t);
 	}
 	else
 		printf("width-left overflow");
@@ -160,7 +169,7 @@ void sl_put_wall(t_data *data, int x_start, int y_start) // parametre olarak sad
 	sl_pixel_fill(data, x_start, y_start, (x_start + data->unit_width), (y_start + data->unit_height), 0x00BC4A3C); // unit_width ve height birim karenin boyutlarini temsil ediyor bu fonksiyon ve parametreler sayesinde bir birim kare boyamis oluyoruz. // duvarlar simdilik yesil renk olacak sonra kahverengi rengini bulup degisicez
 }
 
-void sl_draw_items(t_data *data, t_game *game, char *map_path)
+void sl_init_items(t_data *data, t_game *game, char *map_path)
 {
 	char *s;
 	int fd;
@@ -177,10 +186,9 @@ void sl_draw_items(t_data *data, t_game *game, char *map_path)
 	s = get_next_line(fd);
 	while (s)
 	{
-		game->map[line] = ft_strdup(s);
+		game->map[line++] = ft_strdup(s);
 		while (s[i] && s[i] != '\n')
 		{
-			//game->map[line][i] = s[i];
 			if (s[i] == '1')
 			{
 				sl_put_wall(data, x, y);
@@ -202,17 +210,19 @@ void sl_draw_items(t_data *data, t_game *game, char *map_path)
 				game->curr_y_pos = y;
 				x += data->unit_width;
 			}
-
 			i++;
 		}
-		// game->map[line][i] = '\0';
 		y += data->unit_height;
 		x = 0;
 		i = 0;
 		free(s);
-		line++;
 		s = get_next_line(fd);
 	}
+}
+
+void sl_update_screen(t_game *game)
+{
+	mlx_clear_window(game->mlx, game->win);
 }
 
 void sl_draw_character(t_data *img, int x, int y)
