@@ -12,8 +12,11 @@ typedef struct s_game
 	int curr_x_pos;
 	int curr_y_pos;
 	int curr_score;
-	void	*mlx;
-	void	*win;
+	int screen_width;
+	int screen_height;
+	void *mlx;
+	void *win;
+	char **map;
 } t_game;
 
 typedef struct s_data

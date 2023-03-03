@@ -1,8 +1,28 @@
 #include "so_long.h"
 
+char	*ft_strdup(char *str)
+{
+	char	*c;
+	int		i;
+
+	i = 0;
+	if (!str)
+		return (NULL);
+	c = (char *)malloc(ft_strlen(str) + 1);
+	if (!c)
+		return (NULL);
+	while (str[i])
+	{
+		c[i] = str[i];
+		i++;
+	}
+	c[i] = 0;
+	return (c);
+}
+
 int sl_key_handler(int keycode, t_game *t)
 {
-	printf("code : %d\n", keycode);
+	//printf("code : %d\n", keycode);
 	if (keycode == 53)
 	{
 		mlx_destroy_window(t->mlx, t->win);
@@ -25,30 +45,59 @@ void sl_move(int key, t_game *t)
 		sl_move_left(t);
 	else if (key == 2 || key == 124)
 		sl_move_right(t);
+	printf("konum degisti, yeni konum = x: %d, y: %d\n", t->curr_x_pos, t->curr_y_pos);
 }
 
-void	sl_move_up(t_game *t)
+void sl_move_up(t_game *t)
 {
 	(void)t;
-	printf("up\n");
+	if (t->curr_y_pos >= 50)
+	{
+		t->curr_y_pos -= 50;
+		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
+		// ekran yeniden cizilecek
+	}
+	else
+		printf("height-up overflow");
 }
 
-void	sl_move_down(t_game *t)
+void sl_move_down(t_game *t)
 {
 	(void)t;
-	printf("down\n");
+	if (t->curr_y_pos <= t->screen_height - 50)
+	{
+		t->curr_y_pos += 50;
+		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
+		// ekran yeniden cizilecek
+	}
+	else
+		printf("height-down overflow");
 }
 
-void	sl_move_left(t_game *t)
+void sl_move_left(t_game *t)
 {
 	(void)t;
-	printf("left\n");
+	if (t->curr_x_pos >= 50)
+	{
+		t->curr_x_pos -= 50;
+		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
+		// ekran yeniden cizilecek
+	}
+	else
+		printf("width-left overflow");
 }
 
-void	sl_move_right(t_game *t)
+void sl_move_right(t_game *t)
 {
 	(void)t;
-	printf("right\n");
+	if (t->curr_x_pos <= t->screen_width - 50)
+	{
+		t->curr_x_pos += 50;
+		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
+		// ekran yeniden cizilecek
+	}
+	else
+		printf("width-right overflow");
 }
 
 int get_map_width(char *map_path)
@@ -118,14 +167,18 @@ void sl_draw_items(t_data *data, t_game *game, char *map_path)
 	int x;
 	int y;
 	int i;
+	int	line;
 
 	i = 0;
 	x = 0;
 	y = 0;
+	line = 0;
 	fd = open(map_path, O_RDONLY);
 	s = get_next_line(fd);
 	while (s)
 	{
+		(void)line;
+		//game->map[line++] = ft_strdup(s);
 		while (s[i] && s[i] != '\n')
 		{
 			if (s[i] == '1')
