@@ -64,8 +64,7 @@ void sl_move_up(t_game *t)
 	if (t->curr_y_pos >= 50)
 	{
 		t->curr_y_pos -= 50;
-		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-										  // ekran yeniden cizilecek
+		sl_print_map(t);
 	}
 	else
 		printf("height-up overflow");
