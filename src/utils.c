@@ -5,8 +5,6 @@ void sl_print_map(t_game *game)
 	int i = 0;
 	int	j = 0;
 
-	game->map[6][19] = 0;
-
 	while (game->map[i])
 	{
 		while (game->map[i][j])
