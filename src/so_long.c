@@ -23,7 +23,7 @@ int main(int ac, char **av)
 		game.screen_height = img.map_height * img.unit_height;
 		game.map_height = img.map_height;
 		game.map_width = img.map_width;
-		game.map = malloc(sizeof(char) * (game.map_width * game.map_height));
+		game.map = malloc(sizeof(char *) * ((game.map_height + 1) + 1));
 		mlx = mlx_init();
 		mlx_win = mlx_new_window(mlx, img.unit_width * img.map_width, img.unit_height * img.map_height, "so long");
 		img.img = mlx_new_image(mlx, img.unit_width * img.map_width, img.unit_height * img.map_height);

@@ -3,9 +3,18 @@
 void sl_print_map(t_game *game)
 {
 	int i = 0;
+	int	j = 0;
+
+	game->map[6][19] = 0;
+
 	while (game->map[i])
 	{
-		printf("%s", game->map[i]);
+		while (game->map[i][j])
+		{
+			printf("%c|",game->map[i][j]);
+			j++;
+		}
+		j = 0;
 		i++;
 	}
 }
@@ -185,7 +194,7 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 	s = get_next_line(fd);
 	while (s)
 	{
-		game->map[line++] = ft_strdup(s);
+		game->map[line] = ft_strdup(s);
 		while (s[i] && s[i] != '\n')
 		{
 			if (s[i] == '1')
@@ -215,8 +224,11 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 		x = 0;
 		i = 0;
 		free(s);
+		line++;
 		s = get_next_line(fd);
 	}
+	game->map[game->map_height-2][game->map_width] = 0;
+	game->map[game->map_height-1] = 0;
 }
 
 void sl_update_screen(t_game *game)
