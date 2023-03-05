@@ -3,18 +3,49 @@
 void sl_print_map(t_game *game)
 {
 	int i = 0;
-	int	j = 0;
+	int j = 0;
 
 	while (game->map[i])
 	{
 		while (game->map[i][j])
 		{
-			printf("%c|",game->map[i][j]);
+			printf("%c|", game->map[i][j]);
 			j++;
 		}
 		j = 0;
 		i++;
 	}
+}
+
+void sl_update_map(t_game *game)
+{
+	int i;
+	int j;
+
+	i = -1;
+	j = -1;
+	while (game->map[++i])
+	{
+		while (game->map[i][++j])
+		{
+			if (sl_is_char_valid(game->map[i][j]))
+			{
+				if (game->map[i][j] == '1')
+					sl_put_wall(game->img, (j * game->unit_width), (i * game->unit_height));
+				else if (game->map[i][j] == 'C')
+					sl_draw_collectible(game->img, (j * game->unit_width), (i * game->unit_height));
+				else if (game->map[i][j] == 'P')
+					sl_draw_character(game, (j * game->unit_width), (i * game->unit_height));
+				else if (game->map[i][j] == 'E')
+					sl_draw_exit(game->img, (j * game->unit_width), (i * game->unit_height)); // fonksiyonun ici yazilacak;
+			}
+		}
+	}
+}
+
+int sl_is_char_valid(char c)
+{
+	return ((c == '0') || (c == '1') | (c == 'C'));
 }
 
 char *ft_strdup(char *str)
@@ -39,7 +70,6 @@ char *ft_strdup(char *str)
 
 int sl_key_handler(int keycode, t_game *t)
 {
-	// printf("code : %d\n", keycode);
 	if (keycode == 53)
 	{
 		mlx_destroy_window(t->mlx, t->win);
@@ -62,16 +92,19 @@ void sl_move(int key, t_game *t)
 		sl_move_left(t);
 	else if (key == 2 || key == 124)
 		sl_move_right(t);
+	else
+		return;
 	printf("konum degisti, yeni konum = x: %d, y: %d\n", t->curr_x_pos, t->curr_y_pos);
+	sl_update_map(t);
 }
 
 void sl_move_up(t_game *t)
 {
-	(void)t;
 	if (t->curr_y_pos >= 50)
 	{
+		t->map[t->curr_y_pos/50][t->curr_x_pos/50] = '0';
+		t->map[t->curr_y_pos/t->img->unit_height][(t->curr_x_pos/t->img->unit_width) -1] = 'P';
 		t->curr_y_pos -= 50;
-		sl_print_map(t);
 	}
 	else
 		printf("height-up overflow");
@@ -79,38 +112,24 @@ void sl_move_up(t_game *t)
 
 void sl_move_down(t_game *t)
 {
-	(void)t;
 	if (t->curr_y_pos <= t->screen_height - 50)
-	{
 		t->curr_y_pos += 50;
-		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-										  // ekran yeniden cizilecek
-	}
 	else
 		printf("height-down overflow");
 }
 
 void sl_move_left(t_game *t)
 {
-	(void)t;
 	if (t->curr_x_pos >= 50)
-	{
 		t->curr_x_pos -= 50;
-		sl_update_screen(t);
-	}
 	else
 		printf("width-left overflow");
 }
 
 void sl_move_right(t_game *t)
 {
-	(void)t;
 	if (t->curr_x_pos <= t->screen_width - 50)
-	{
 		t->curr_x_pos += 50;
-		mlx_clear_window(t->mlx, t->win); // ekran temizlendi
-										  // ekran yeniden cizilecek
-	}
 	else
 		printf("width-right overflow");
 }
@@ -211,7 +230,7 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 			}
 			else if (s[i] == 'P')
 			{
-				sl_draw_character(data, x, y);
+				sl_draw_character(game, x, y);
 				game->curr_x_pos = x;
 				game->curr_y_pos = y;
 				x += data->unit_width;
@@ -225,24 +244,27 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 		line++;
 		s = get_next_line(fd);
 	}
-	game->map[game->map_height-2][game->map_width] = 0;
-	game->map[game->map_height-1] = 0;
+	game->map[game->map_height - 2][game->map_width] = 0;
+	game->map[game->map_height - 1] = 0;
 }
 
 void sl_update_screen(t_game *game)
 {
 	mlx_clear_window(game->mlx, game->win);
+	sl_update_map(game);
 }
 
-void sl_draw_character(t_data *img, int x, int y)
-{																	// karakter boyu 18x50
-	sl_pixel_fill(img, x + 4, y, x + 14, y + 10, 0x00ACB9EF);		// kafa
-	sl_pixel_fill(img, x + 8, y + 10, x + 10, y + 13, 0x0000DD00);	// boyun
-	sl_pixel_fill(img, x, y + 13, x + 2, y + 33, 0x0000DD00);		// sol-kol
-	sl_pixel_fill(img, x + 16, y + 13, x + 18, y + 33, 0x0000DD00); // sag-kol
-	sl_pixel_fill(img, x + 4, y + 13, x + 14, y + 33, 0x0000DD00);	// govde
-	sl_pixel_fill(img, x + 4, y + 35, x + 7, y + 50, 0x0000DD00);	// sol-bacak
-	sl_pixel_fill(img, x + 11, y + 35, x + 14, y + 50, 0x0000DD00); // sag-bacak
+void sl_draw_character(t_game *game, int x, int y)
+{
+	sl_pixel_fill(game->img, x + 4, y, x + 14, y + 10, 0x00ACB9EF);		  // kafa
+	sl_pixel_fill(game->img, x + 8, y + 10, x + 10, y + 13, 0x0000DD00);  // boyun
+	sl_pixel_fill(game->img, x, y + 13, x + 2, y + 33, 0x0000DD00);		  // sol-kol
+	sl_pixel_fill(game->img, x + 16, y + 13, x + 18, y + 33, 0x0000DD00); // sag-kol
+	sl_pixel_fill(game->img, x + 4, y + 13, x + 14, y + 33, 0x0000DD00);  // govde
+	sl_pixel_fill(game->img, x + 4, y + 35, x + 7, y + 50, 0x0000DD00);	  // sol-bacak
+	sl_pixel_fill(game->img, x + 11, y + 35, x + 14, y + 50, 0x0000DD00); // sag-bacak
+	game->curr_x_pos = x;
+	game->curr_y_pos = y;
 }
 
 void sl_draw_collectible(t_data *img, int x, int y)
@@ -255,4 +277,12 @@ void sl_draw_collectible(t_data *img, int x, int y)
 	sl_pixel_fill(img, x + 23, y + 27, x + 28, y + 27, 0x00474646);
 	sl_pixel_fill(img, x + 25, y + 27, x + 25, y + 30, 0x00474646);
 	sl_pixel_fill(img, x + 9, y + 30, x + 41, y + 30, 0x0000DD00);
+}
+
+void sl_draw_exit(t_data *img, int x, int y)
+{
+	(void)img;
+	(void)x;
+	(void)y;
+	printf("E");
 }
