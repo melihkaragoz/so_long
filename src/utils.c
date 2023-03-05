@@ -29,12 +29,10 @@ void sl_update_map(t_game *game)
 	game->img->addr = mlx_get_data_addr(game->img->img, &game->img->bits_per_pixel, &game->img->line_length, &game->img->endian);
 	while (game->map[++i])
 	{
-		printf("$$$%s$$$\n",game->map[i]);
 		while (game->map[i][++j])
 		{
-			if (1)//(sl_is_char_valid(game->map[i][j]))
+			if (sl_is_char_valid(game->map[i][j]))
 			{
-				printf("%c",game->map[i][j]);
 				if (game->map[i][j] == '1')
 					sl_put_wall(game->img, (j * game->unit_width), (i * game->unit_height));
 				else if (game->map[i][j] == 'C')
@@ -42,19 +40,16 @@ void sl_update_map(t_game *game)
 				else if (game->map[i][j] == 'P')
 					sl_draw_character(game, (j * game->unit_width), (i * game->unit_height));
 				else if (game->map[i][j] == 'E')
-					sl_draw_exit(game->img, (j * game->unit_width), (i * game->unit_height)); // fonksiyonun ici yazilacak;
+					sl_draw_exit(game, (j * game->unit_width), (i * game->unit_height)); // fonksiyonun ici yazilacak;
 			}
 		}
-		//printf("\n");
+		j = -1;
 	}
-	printf("##############");
-	sl_print_map(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->img->img, 0, 0);
 }
 
 int sl_is_char_valid(char c)
 {
-	//printf("-%c-",c);
 	return ((c == '0') || (c == '1') || (c == 'C') || (c == 'P') || (c == 'E') || (c == '\n'));
 }
 
@@ -94,57 +89,121 @@ int sl_key_handler(int keycode, t_game *t)
 
 void sl_move(int key, t_game *t)
 {
-	//sl_print_map(t);
+	int j;
+
+	j = 0;
 	if (key == 13 || key == 126)
-		sl_move_up(t);
+		j = sl_move_up(t);
 	else if (key == 1 || key == 125)
-		sl_move_down(t);
+		j = sl_move_down(t);
 	else if (key == 0 || key == 123)
-		sl_move_left(t);
+		j = sl_move_left(t);
 	else if (key == 2 || key == 124)
-		sl_move_right(t);
+		j = sl_move_right(t);
 	else
 		return;
 	printf("konum degisti, yeni konum = x: %d, y: %d\n", t->curr_x_pos, t->curr_y_pos);
 	sl_update_map(t);
 }
 
-void sl_move_up(t_game *t)
+int sl_move_up(t_game *t)
 {
-	if (t->curr_y_pos >= 50)
+	printf("%d:%d\n",t->curr_score,t->total_collectible);
+	if (t->map[(t->curr_y_pos / t->img->unit_height) - 1][(t->curr_x_pos / t->img->unit_width)] != '1' &&
+		(t->map[(t->curr_y_pos / t->img->unit_height) - 1][(t->curr_x_pos / t->img->unit_width)] != 'E' ||
+		t->curr_score == t->total_collectible)
+	)
 	{
-		//printf("\n----%d---\n", t->curr_x_pos / 50);
-		//printf("----%d---\n", t->curr_y_pos / 50);
+		if (t->map[(t->curr_y_pos / t->img->unit_height) - 1][(t->curr_x_pos / t->img->unit_width)] == 'C')
+		{
+			t->curr_score++;
+			printf("current score : %d\n", t->curr_score);
+		}
 		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width)] = '0';
+		if(t->map[(t->curr_y_pos / t->img->unit_height)-1][(t->curr_x_pos / t->img->unit_width)] == 'E')
+			exit(0);
 		t->map[(t->curr_y_pos / t->img->unit_height) - 1][(t->curr_x_pos / t->img->unit_width)] = 'P';
 		t->curr_y_pos -= 50;
+		return (1);
 	}
 	else
 		printf("height-up overflow");
+	return (0);
 }
 
-void sl_move_down(t_game *t)
+int sl_move_down(t_game *t)
 {
-	if (t->curr_y_pos <= t->screen_height - 50)
+	printf("%d:%d\n",t->curr_score,t->total_collectible);
+	if (t->map[(t->curr_y_pos / t->img->unit_height) + 1][(t->curr_x_pos / t->img->unit_width)] != '1' &&
+		(t->map[(t->curr_y_pos / t->img->unit_height) + 1][(t->curr_x_pos / t->img->unit_width)] != 'E' ||
+		t->curr_score == t->total_collectible)
+	)
+	{
+		if (t->map[(t->curr_y_pos / t->img->unit_height) + 1][(t->curr_x_pos / t->img->unit_width)] == 'C')
+		{
+			t->curr_score++;
+			printf("current score : %d\n", t->curr_score);
+		}
+		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width)] = '0';
+		if(t->map[(t->curr_y_pos / t->img->unit_height)+1][(t->curr_x_pos / t->img->unit_width)] == 'E')
+			exit(0);
+		t->map[(t->curr_y_pos / t->img->unit_height) + 1][(t->curr_x_pos / t->img->unit_width)] = 'P';
 		t->curr_y_pos += 50;
+		return (1);
+	}
 	else
 		printf("height-down overflow");
+	return (0);
 }
 
-void sl_move_left(t_game *t)
+int sl_move_left(t_game *t)
 {
-	if (t->curr_x_pos >= 50)
+	printf("%d:%d\n",t->curr_score,t->total_collectible);
+	if (t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) - 1] != '1' &&
+		(t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) - 1] != 'E' ||
+		t->curr_score == t->total_collectible)
+	)
+	{
+		if (t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) - 1] == 'C')
+		{
+			t->curr_score++;
+			printf("current score : %d\n", t->curr_score);
+		}
+		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width)] = '0';
+		if(t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) - 1] == 'E')
+			exit(0);
+		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) - 1] = 'P';
 		t->curr_x_pos -= 50;
+		return (1);
+	}
 	else
 		printf("width-left overflow");
+	return (0);
 }
 
-void sl_move_right(t_game *t)
+int sl_move_right(t_game *t)
 {
-	if (t->curr_x_pos <= t->screen_width - 50)
+	printf("%d:%d\n",t->curr_score,t->total_collectible);
+	if (t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) + 1] != '1' &&
+		(t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) + 1] != 'E' ||
+		t->curr_score == t->total_collectible)
+	)
+	{
+		if (t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) + 1] == 'C')
+		{
+			t->curr_score++;
+			printf("current score : %d\n", t->curr_score);
+		}
+		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width)] = '0';
+		if(t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) + 1] == 'E')
+			exit(0);
+		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width) + 1] = 'P';
 		t->curr_x_pos += 50;
+		return (1);
+	}
 	else
 		printf("width-right overflow");
+	return (0);
 }
 
 int get_map_width(char *map_path)
@@ -233,12 +292,13 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 				sl_put_wall(data, x, y);
 				x += data->unit_width;
 			}
-			else if (s[i] == '0' || s[i] == 'E')
+			else if (s[i] == '0')
 			{
 				x += data->unit_width;
 			}
 			else if (s[i] == 'C')
 			{
+				game->total_collectible++;
 				sl_draw_collectible(data, x, y);
 				x += data->unit_width;
 			}
@@ -248,6 +308,10 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 				game->curr_x_pos = x;
 				game->curr_y_pos = y;
 				x += data->unit_width;
+			}
+			else if(s[i] == 'E')
+			{
+				sl_draw_exit(game,(i * game->unit_width), (line * game->unit_height));
 			}
 			i++;
 		}
@@ -270,7 +334,7 @@ void sl_update_screen(t_game *game)
 
 void sl_draw_character(t_game *game, int x, int y)
 {
-	printf("--%d--%d\n",x,y);
+	printf("--%d--%d\n", x, y);
 	sl_pixel_fill(game->img, x + 4, y, x + 14, y + 10, 0x00ACB9EF);		  // kafa
 	sl_pixel_fill(game->img, x + 8, y + 10, x + 10, y + 13, 0x0000DD00);  // boyun
 	sl_pixel_fill(game->img, x, y + 13, x + 2, y + 33, 0x0000DD00);		  // sol-kol
@@ -294,10 +358,14 @@ void sl_draw_collectible(t_data *img, int x, int y)
 	sl_pixel_fill(img, x + 9, y + 30, x + 41, y + 30, 0x0000DD00);
 }
 
-void sl_draw_exit(t_data *img, int x, int y)
+void sl_draw_exit(t_game *game, int x, int y)
 {
-	(void)img;
-	(void)x;
-	(void)y;
-	printf("E");
+	x -= 3;
+	sl_pixel_fill(game->img, x + 9, y + 20, x + 41, y + 30, 0x00FF0000);
+	sl_pixel_fill(game->img, x + 25, y + 21, x + 25, y + 23, 0x00FF0000);
+	sl_pixel_fill(game->img, x + 23, y + 24, x + 28, y + 24, 0x00FF0000);
+	sl_pixel_fill(game->img, x + 23, y + 24, x + 23, y + 27, 0x00FF0000);
+	sl_pixel_fill(game->img, x + 23, y + 27, x + 28, y + 27, 0x00FF0000);
+	sl_pixel_fill(game->img, x + 25, y + 27, x + 25, y + 30, 0x00FF0000);
+	sl_pixel_fill(game->img, x + 9, y + 30, x + 41, y + 30, 0x00FF0000);
 }
