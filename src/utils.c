@@ -89,17 +89,14 @@ int sl_key_handler(int keycode, t_game *t)
 
 void sl_move(int key, t_game *t)
 {
-	int j;
-
-	j = 0;
 	if (key == 13 || key == 126)
-		j = sl_move_up(t);
+		sl_move_up(t);
 	else if (key == 1 || key == 125)
-		j = sl_move_down(t);
+		sl_move_down(t);
 	else if (key == 0 || key == 123)
-		j = sl_move_left(t);
+		sl_move_left(t);
 	else if (key == 2 || key == 124)
-		j = sl_move_right(t);
+		sl_move_right(t);
 	else
 		return;
 	printf("konum degisti, yeni konum = x: %d, y: %d\n", t->curr_x_pos, t->curr_y_pos);
