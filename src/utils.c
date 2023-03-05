@@ -7,9 +7,9 @@ void sl_print_map(t_game *game)
 
 	while (game->map[i])
 	{
-		while (game->map[i][j])
+		while (j <= ft_strlen(game->map[i]))
 		{
-			printf("%c|", game->map[i][j]);
+			printf("%i|", game->map[i][j]);
 			j++;
 		}
 		j = 0;
@@ -24,12 +24,17 @@ void sl_update_map(t_game *game)
 
 	i = -1;
 	j = -1;
+	mlx_clear_window(game->mlx, game->win);
+	game->img->img = mlx_new_image(game->mlx, game->img->unit_width * game->img->map_width, game->img->unit_height * game->img->map_height);
+	game->img->addr = mlx_get_data_addr(game->img->img, &game->img->bits_per_pixel, &game->img->line_length, &game->img->endian);
 	while (game->map[++i])
 	{
+		printf("$$$%s$$$\n",game->map[i]);
 		while (game->map[i][++j])
 		{
-			if (sl_is_char_valid(game->map[i][j]))
+			if (1)//(sl_is_char_valid(game->map[i][j]))
 			{
+				printf("%c",game->map[i][j]);
 				if (game->map[i][j] == '1')
 					sl_put_wall(game->img, (j * game->unit_width), (i * game->unit_height));
 				else if (game->map[i][j] == 'C')
@@ -40,12 +45,17 @@ void sl_update_map(t_game *game)
 					sl_draw_exit(game->img, (j * game->unit_width), (i * game->unit_height)); // fonksiyonun ici yazilacak;
 			}
 		}
+		//printf("\n");
 	}
+	printf("##############");
+	sl_print_map(game);
+	mlx_put_image_to_window(game->mlx, game->win, game->img->img, 0, 0);
 }
 
 int sl_is_char_valid(char c)
 {
-	return ((c == '0') || (c == '1') | (c == 'C'));
+	//printf("-%c-",c);
+	return ((c == '0') || (c == '1') || (c == 'C') || (c == 'P') || (c == 'E') || (c == '\n'));
 }
 
 char *ft_strdup(char *str)
@@ -84,6 +94,7 @@ int sl_key_handler(int keycode, t_game *t)
 
 void sl_move(int key, t_game *t)
 {
+	//sl_print_map(t);
 	if (key == 13 || key == 126)
 		sl_move_up(t);
 	else if (key == 1 || key == 125)
@@ -102,8 +113,10 @@ void sl_move_up(t_game *t)
 {
 	if (t->curr_y_pos >= 50)
 	{
-		t->map[t->curr_y_pos/50][t->curr_x_pos/50] = '0';
-		t->map[t->curr_y_pos/t->img->unit_height][(t->curr_x_pos/t->img->unit_width) -1] = 'P';
+		//printf("\n----%d---\n", t->curr_x_pos / 50);
+		//printf("----%d---\n", t->curr_y_pos / 50);
+		t->map[(t->curr_y_pos / t->img->unit_height)][(t->curr_x_pos / t->img->unit_width)] = '0';
+		t->map[(t->curr_y_pos / t->img->unit_height) - 1][(t->curr_x_pos / t->img->unit_width)] = 'P';
 		t->curr_y_pos -= 50;
 	}
 	else
@@ -212,6 +225,7 @@ void sl_init_items(t_data *data, t_game *game, char *map_path)
 	while (s)
 	{
 		game->map[line] = ft_strdup(s);
+		game->map[line][ft_strlen(s)] = 0;
 		while (s[i] && s[i] != '\n')
 		{
 			if (s[i] == '1')
@@ -256,6 +270,7 @@ void sl_update_screen(t_game *game)
 
 void sl_draw_character(t_game *game, int x, int y)
 {
+	printf("--%d--%d\n",x,y);
 	sl_pixel_fill(game->img, x + 4, y, x + 14, y + 10, 0x00ACB9EF);		  // kafa
 	sl_pixel_fill(game->img, x + 8, y + 10, x + 10, y + 13, 0x0000DD00);  // boyun
 	sl_pixel_fill(game->img, x, y + 13, x + 2, y + 33, 0x0000DD00);		  // sol-kol

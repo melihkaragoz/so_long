@@ -16,6 +16,8 @@ int main(int ac, char **av)
 		img.map_height = get_map_height(map_path);
 		img.unit_width = 50;
 		img.unit_height = 50;
+		game.unit_height = 50;
+		game.unit_width = 50;
 		game.curr_x_pos = 0;
 		game.curr_y_pos = 0;
 		game.curr_score = 0;
