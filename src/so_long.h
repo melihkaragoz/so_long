@@ -28,7 +28,7 @@ typedef struct s_game
 	int curr_x_pos;
 	int curr_y_pos;
 	int curr_score;
-	int	total_collectible;
+	int total_collectible;
 	int screen_width;
 	int screen_height;
 	int unit_width;
@@ -50,6 +50,7 @@ void sl_init_items(t_data *data, t_game *game, char *map_path);
 void sl_draw_collectible(t_data *img, int x, int y);
 void sl_draw_exit(t_game *game, int x, int y);
 void sl_update_screen(t_game *game);
+void sl_update_map(t_game *game);
 void sl_move(int key, t_game *t);
 int sl_move_up(t_game *t);
 int sl_move_down(t_game *t);
@@ -60,4 +61,5 @@ int sl_is_char_valid(char c);
 int get_map_width(char *map_path);
 int get_map_height(char *map_path);
 int sl_key_handler(int keycode, t_game *t);
+char *ft_strdup(char *str);
 #endif
