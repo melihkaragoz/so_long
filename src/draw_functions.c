@@ -2,7 +2,6 @@
 
 void sl_draw_character(t_game *game, int x, int y)
 {
-	printf("--%d--%d\n", x, y);
 	sl_pixel_fill(game->img, x + 4, y, x + 14, y + 10, 0x00ACB9EF);		  // kafa
 	sl_pixel_fill(game->img, x + 8, y + 10, x + 10, y + 13, 0x0000DD00);  // boyun
 	sl_pixel_fill(game->img, x, y + 13, x + 2, y + 33, 0x0000DD00);		  // sol-kol

@@ -7,8 +7,6 @@ int sl_key_handler(int keycode, t_game *t)
 		mlx_destroy_window(t->mlx, t->win);
 		exit(0);
 	}
-	else if (keycode == 36)
-		mlx_clear_window(t->mlx, t->win);
 	else
 		sl_move(keycode, t);
 	return (0);

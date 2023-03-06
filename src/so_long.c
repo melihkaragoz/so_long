@@ -35,6 +35,7 @@ int main(int ac, char **av)
 		game.img = &img;
 		game.curr_score = 0;
 		game.total_collectible = 0;
+		game.step_count = 0;
 		sl_init_items(&img, &game, map_path);
 		mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
 		mlx_hook(mlx_win, 2, 1L << 0, sl_key_handler, &game);
