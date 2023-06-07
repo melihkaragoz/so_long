@@ -1,29 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/28 04:27:54 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/03/17 02:56:24 by mkaragoz         ###   ########.fr       */
+/*   Created: 2023/03/20 22:01:38 by mkaragoz          #+#    #+#             */
+/*   Updated: 2023/03/20 22:01:47 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdlib.h>
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*a;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 99
-# endif
-
-int		ft_n_gnl(char *s1);
-char	*ft_strjoin_gnl(char *s1, char *s2);
-int		ft_strlen_gnl(char *str);
-char	*ft_get_line_gnl(char *str);
-char	*ft_update_str_gnl(char *str);
-char	*get_next_line(int fd);
-#endif
+	a = malloc(count * size);
+	if (a == NULL)
+		return (NULL);
+	ft_bzero (a, size * count);
+	return (a);
+}

@@ -6,13 +6,13 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 04:27:45 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/03/01 22:35:01 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/03/16 01:05:16 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	ft_n(char *s1)
+int	ft_n_gnl(char *s1)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ int	ft_n(char *s1)
 	return (0);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin_gnl(char *s1, char *s2)
 {
 	char	*str;
 	int		i;
@@ -39,7 +39,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		s1 = malloc(1 * sizeof(char));
 		*s1 = '\0';
 	}
-	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	str = malloc(sizeof(char) * (ft_strlen_gnl(s1) + ft_strlen_gnl(s2) + 1));
 	if (!str)
 		return (NULL);
 	i = -1;
@@ -53,7 +53,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (str);
 }
 
-int	ft_strlen(char *str)
+int	ft_strlen_gnl(char *str)
 {
 	int	i;
 
@@ -63,7 +63,7 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-char	*ft_get_line(char *str)
+char	*ft_get_line_gnl(char *str)
 {
 	char	*line;
 	int		i;
@@ -91,7 +91,7 @@ char	*ft_get_line(char *str)
 	return (line);
 }
 
-char	*ft_update_str(char *str)
+char	*ft_update_str_gnl(char *str)
 {
 	int		i;
 	int		j;
@@ -106,7 +106,7 @@ char	*ft_update_str(char *str)
 		free(str);
 		return (NULL);
 	}
-	new = malloc(sizeof(char) * (ft_strlen(str) - i + 1));
+	new = malloc(sizeof(char) * (ft_strlen_gnl(str) - i + 1));
 	if (!new)
 		return (NULL);
 	i++;

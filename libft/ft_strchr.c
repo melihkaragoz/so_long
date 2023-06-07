@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/28 04:27:54 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/03/17 02:56:24 by mkaragoz         ###   ########.fr       */
+/*   Created: 2023/03/20 22:04:00 by mkaragoz          #+#    #+#             */
+/*   Updated: 2023/03/20 22:04:00 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdlib.h>
+char	*ft_strchr(const char *s, int c)
+{
+	unsigned char	i;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 99
-# endif
-
-int		ft_n_gnl(char *s1);
-char	*ft_strjoin_gnl(char *s1, char *s2);
-int		ft_strlen_gnl(char *str);
-char	*ft_get_line_gnl(char *str);
-char	*ft_update_str_gnl(char *str);
-char	*get_next_line(int fd);
-#endif
+	i = (unsigned char)c;
+	if (i == '\0')
+		return ((char *)s + ft_strlen(s));
+	while (*s != '\0')
+	{
+		if (*s == i)
+			return ((char *)s);
+		s++;
+	}
+	return (NULL);
+}

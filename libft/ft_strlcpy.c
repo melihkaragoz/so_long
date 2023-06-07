@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/28 04:27:54 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/03/17 02:56:24 by mkaragoz         ###   ########.fr       */
+/*   Created: 2023/03/20 22:04:22 by mkaragoz          #+#    #+#             */
+/*   Updated: 2023/03/20 22:04:23 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdlib.h>
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+	char	*a;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 99
-# endif
-
-int		ft_n_gnl(char *s1);
-char	*ft_strjoin_gnl(char *s1, char *s2);
-int		ft_strlen_gnl(char *str);
-char	*ft_get_line_gnl(char *str);
-char	*ft_update_str_gnl(char *str);
-char	*get_next_line(int fd);
-#endif
+	a = (char *)src;
+	i = 0;
+	if (dstsize > 0)
+	{
+		while (a[i] && i < dstsize - 1)
+		{
+			dst[i] = a[i];
+			i++;
+		}
+		dst[i] = 0;
+	}
+	while (src[i])
+		i++;
+	return (i);
+}

@@ -1,87 +1,66 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/20 22:06:28 by mkaragoz          #+#    #+#             */
+/*   Updated: 2023/03/20 22:06:29 by mkaragoz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-int sl_key_handler(int keycode, t_game *t)
+void	sl_put_xpm(t_game *t, char *path, int x, int y)
+{
+	void	*xpm;
+	int		w;
+
+	w = 50;
+	xpm = mlx_xpm_file_to_image(t->mlx, path, &w, &w);
+	mlx_put_image_to_window(t->mlx, t->win, xpm, x, y);
+}
+
+int	sl_key_handler(int keycode, t_game *t)
 {
 	if (keycode == 53)
-	{
-		mlx_destroy_window(t->mlx, t->win);
-		exit(0);
-	}
+		exit_with_error(t, "game exit with ESC\n", 1);
 	else
 		sl_move(keycode, t);
 	return (0);
 }
 
-void sl_pixel_put(t_data *data, int x, int y, int color)
+void	sl_init_game(t_game *t)
 {
-	char *d;
-
-	d = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int *)d = color;
+	t->i = 0;
+	t->curr_x_pos = 0;
+	t->curr_y_pos = 0;
+	t->curr_score = 0;
+	t->total_collectible = 0;
+	t->step_count = 0;
+	t->unit_size = 50;
+	t->map_init = 0;
+	t->fill_x = 0;
+	t->fill_y = 0;
+	t->screen_width = t->map_width * t->unit_size;
+	t->screen_height = t->map_height * t->unit_size;
+	t->arr_map = ft_split(t->map, '\n');
 }
 
-void sl_init_items(t_data *data, t_game *game, char *map_path)
+void	sl_prepare_window(t_game *t)
 {
-	char *s;
-	int fd;
-	int x;
-	int y;
-	int i;
-	int line;
-
-	i = 0;
-	x = 0;
-	y = 0;
-	line = 0;
-	fd = open(map_path, O_RDONLY);
-	s = get_next_line(fd);
-	while (s)
-	{
-		game->map[line] = ft_strdup(s);
-		game->map[line][ft_strlen(s)] = 0;
-		while (s[i] && s[i] != '\n')
-		{
-			if (s[i] == '1')
-			{
-				sl_put_wall(data, x, y);
-				x += data->unit_width;
-			}
-			else if (s[i] == '0')
-			{
-				x += data->unit_width;
-			}
-			else if (s[i] == 'C')
-			{
-				game->total_collectible++;
-				sl_draw_collectible(data, x, y);
-				x += data->unit_width;
-			}
-			else if (s[i] == 'P')
-			{
-				sl_draw_character(game, x, y);
-				game->curr_x_pos = x;
-				game->curr_y_pos = y;
-				x += data->unit_width;
-			}
-			else if(s[i] == 'E')
-			{
-				sl_draw_exit(game,(i * game->unit_width), (line * game->unit_height));
-			}
-			i++;
-		}
-		y += data->unit_height;
-		x = 0;
-		i = 0;
-		free(s);
-		line++;
-		s = get_next_line(fd);
-	}
-	game->map[game->map_height - 2][game->map_width] = 0;
-	game->map[game->map_height - 1] = 0;
+	mlx_clear_window(t->mlx, t->win);
+	free(t->addr);
+	free(t->img);
+	t->img = mlx_new_image(t->mlx, t->unit_size * t->map_width,
+			t->unit_size * t->map_height);
+	t->addr = mlx_get_data_addr(t->img, &t->bppx,
+			&t->line_length, &t->endian);
 }
 
-void sl_update_screen(t_game *game)
+void	game_over(t_game *game)
 {
-	mlx_clear_window(game->mlx, game->win);
-	sl_update_map(game);
+	ft_putstr_fd("Congrats... The game is over.\n", 1);
+	exit_with_error(game, "", 0);
 }
